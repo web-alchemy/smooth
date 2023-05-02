@@ -14,7 +14,11 @@
     "start": "npx serve",
     "build": "microbundle",
     "dev": "microbundle watch --generateTypes",
-    "prepublishOnly": "npm run build --generateTypes"
+    "prepublishOnly": "npm run build --generateTypes",
+    "postpublish": "git push origin --all; git push origin --tags",
+    "postversion": "npm publish",
+    "preversion": "npm test",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
