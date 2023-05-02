@@ -16,6 +16,14 @@
     "dev": "microbundle watch --generateTypes",
     "prepublishOnly": "npm run build --generateTypes"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web-alchemy/smooth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web-alchemy/smooth/issues"
+  },
+  "homepage": "https://github.com/web-alchemy/smooth",
   "files": [
     "dist"
   ],
