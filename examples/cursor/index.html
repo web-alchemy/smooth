@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor</title>
+  <style>
+    .cursor {
+      --_x: var(--x, 0);
+      --_y: var(--y, 0);
+      --_size: var(--size, 2rem);
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform:
+        translate3d(
+          calc(var(--x) * 1px - 50%),
+          calc(var(--y) * 1px - 50%),
+          0
+        );
+      box-sizing: border-box;
+      border: 2px solid;
+      width: var(--_size);
+      aspect-ratio: 1;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" role="presentation"></div>
+  <script type="module">
+    import { Smooth } from '../../src/smooth.js'
+
+    const initialValue = [window.innerWidth / 2, window.innerHeight / 2]
+
+    const smooth = new Smooth({
+      value: initialValue,
+      step: 0.075,
+      accuracy: 0.001
+    })
+
+    const cursor = document.querySelector('.cursor')
+
+    function render(x, y) {
+      cursor.style.setProperty('--x', x.toFixed(2))
+      cursor.style.setProperty('--y', y.toFixed(2))
+    }
+
+    document.addEventListener('pointermove', (event) => {
+      smooth.update([event.clientX, event.clientY])
+    })
+
+    smooth.addEventListener('update', (event) => {
+      const [x, y] = event.detail
+      render(x, y)
+    })
+
+    render(initialValue[0], initialValue[1])
+    // or
+    // smooth.start()
+  </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Images</title>
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      animation-name: background-color;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-play-state: paused;
+      animation-delay: calc(-1s * var(--scroll-ratio));
+    }
+
+    body::before {
+      content: '';
+      display: block;
+      min-height: calc(100vh * var(--items-count));
+    }
+
+    @keyframes background-color {
+      0% {
+        background-color: #ff9a9e;
+      }
+
+      99% {
+        background-color: #fad0c4;
+      }
+
+      100% {
+        background-color: #fad0c4;
+      }
+    }
+
+    main {}
+
+    section {
+      --start: (var(--index)) * var(--part);
+      --end: (var(--index) + 1) * var(--part);
+      --section-scroll: clamp(var(--start), var(--scroll), var(--end));
+      --section-ratio: (var(--section-scroll) - var(--start)) / (var(--end) - var(--start));
+      position: fixed;
+      inset: 0;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    section > img {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: 80%;
+      min-height: 0;
+      min-width: 0;
+      border-radius: 1rem;
+      animation-name: imageAnimation;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-play-state: paused;
+      animation-delay: calc(-1s * var(--section-ratio));
+    }
+
+    @keyframes imageAnimation {
+      0% {
+        opacity: 0;
+        transform: translateX(100%) translateY(50%) rotateY(90deg) scale(0.25);
+      }
+
+      33.33% {
+        opacity: 1;
+        transform: translateX(0%) translateY(0%) rotateY(0deg) scale(1);
+      }
+
+      66.66% {
+        opacity: 1;
+        transform: translateX(0%) translateY(0%) rotateY(0deg) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(-100%) translateY(0%) rotateY(-90deg) scale(0.5);
+      }
+    }
+
+    section:nth-child(1) {
+      --index: 0;
+    }
+
+    section:nth-child(2) {
+      --index: 1;
+    }
+
+    section:nth-child(3) {
+      --index: 2;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <img src="https://picsum.photos/id/10/800/1200" alt="">
+    </section>
+
+    <section>
+      <img src="https://picsum.photos/id/11/800/1200" alt="">
+    </section>
+
+    <section>
+      <img src="https://picsum.photos/id/15/800/1200" alt="">
+    </section>
+  </main>
+
+  <script type="module">
+    import { Smooth } from '../../src/smooth.js'
+
+    const sections = [...document.querySelectorAll('section')]
+    const rootElement = document.documentElement
+
+    let viewportHeight
+    let maxScroll
+    let scrollHeight
+
+    function calcSizes() {
+      rootElement.style.setProperty('--scroll-height', 'auto')
+      requestAnimationFrame(() => {
+        viewportHeight = window.innerHeight
+        scrollHeight = sections.length * viewportHeight
+        maxScroll = scrollHeight - viewportHeight
+        rootElement.style.setProperty('--scroll-height', scrollHeight)
+        rootElement.style.setProperty('--part', maxScroll / sections.length)
+        rootElement.style.setProperty('--items-count', sections.length)
+      })
+    }
+
+    function render(scroll) {
+      rootElement.style.setProperty('--scroll', scroll.toFixed(2))
+      rootElement.style.setProperty('--scroll-ratio', (scroll / maxScroll).toFixed(2))
+    }
+
+    const smooth = new Smooth({
+      value: [0],
+      step: 0.075,
+      accuracy: 0.001,
+    })
+
+    window.addEventListener('scroll', () => {
+      smooth.update([window.scrollY])
+    })
+
+    window.addEventListener('resize', () => {
+      calcSizes()
+    })
+
+    smooth.addEventListener('update', (event) => {
+      render(event.detail[0])
+    })
+
+    calcSizes()
+  </script>
+</body>
+</html>

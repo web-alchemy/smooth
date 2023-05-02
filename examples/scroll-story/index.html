@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html style="--scroll: 0">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Animations</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="page-background scene"></div>
+
+  <div class="page">
+    <div class="box scene">Box</div>
+
+    <section class="section">1</section>
+
+    <section class="section">
+      <img class="section__image scene" src="https://picsum.photos/1920/1080" alt="" style="--start: 0; --duration: calc(200 * var(--vh));">
+      <div class="section__text">2 Some text</div>
+    </section>
+
+    <section class="section">
+      <img class="section__image scene" src="https://picsum.photos/1920/1079" alt="" style="--start: calc(100 * var(--vh)); --duration: calc(200 * var(--vh));">
+      <div class="section__text">3 Some text</div>
+    </section>
+
+    <section class="section">4</section>
+
+    <section class="video-section scene">
+      <div class="video-section__container">
+        <video class="video-section__media" src="video.mp4" width="640" height="320" muted loop playsinline autoplay></video>
+      </div>
+    </section>
+
+    <section class="scene text-section">
+      <div class="text-section__content scene lerp">
+        <h2>Lorem, ipsum dolor.</h2>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Amet odio enim facilis sed, eos quis? Aperiam itaque deleniti fugit architecto nostrum distinctio quidem vel, iste facere voluptas ipsum eos. Itaque.</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. At minus magni ducimus necessitatibus consectetur autem dolorum omnis quisquam? Ea ipsam repellendus ducimus sit neque nulla omnis temporibus aliquam voluptas labore?</p>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iusto deserunt exercitationem quo quas rerum dolores dolorem aliquid inventore ducimus ipsam id vel quia, earum fugit quae vitae ullam quos a.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="page-progress scene"></div>
+
+  <script src="scripts.js" type="module"></script>
+</body>
+</html>

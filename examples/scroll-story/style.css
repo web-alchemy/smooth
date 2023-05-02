@@ -1,0 +1,227 @@
+/* library */
+.scene {
+  --__start: var(--start, calc(var(--end) - var(--duration)));
+  --__end: var(--end, calc(var(--start) + var(--duration)));
+  --__duration: var(--duration, calc(var(--end) - var(--start)));
+  /* --__render-value: calc((var(--__start) - var(--scroll))); */
+
+  --scene-scroll: clamp(var(--__start), var(--scroll), var(--__end));
+  --scene-progress: calc((var(--scene-scroll) - var(--__start)) / (var(--__end) - var(--__start)));
+
+  --scroll-animation-timing-function: linear;
+  --scroll-animation-fill-mode: both;
+  --scroll-animation-play-state: paused;
+  --scroll-animation-duration: calc(var(--__duration) * 1s);
+  /* --scroll-animation-delay: calc(var(--__render-value) * 1s); */
+  --scroll-animation-delay: calc(var(--scene-progress) * var(--__duration) * -1s);
+  --scroll-animation-name: /**/;
+
+  --animation:
+    var(--scroll-animation-duration)
+    var(--scroll-animation-timing-function)
+    var(--scroll-animation-delay)
+    var(--scroll-animation-fill-mode)
+    var(--scroll-animation-play-state)
+    var(--scroll-animation-name)
+  ;
+
+  animation: var(--animation);
+}
+
+.lerp,
+.mix {
+  --lerp-value: calc(var(--min) + (var(--max) - var(--min)) * var(--mult));
+}
+
+:root {}
+
+body {
+  position: relative;
+  margin: 0;
+  height: calc(var(--scroll-height) * 1px);
+  min-height: 100vh;
+}
+
+/**
+ * Animation 1. Page Background Color
+ */
+.page-background {
+  --start: 0;
+  --duration: var(--max-scroll);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  --scroll-animation-name: pageBackground;
+}
+
+@keyframes pageBackground {
+  0% {
+    background-color: hsl(0, 68.9%, 76.1%);
+  }
+  100% {
+    background-color: hsl(224, 76.2%, 75.3%);
+  }
+}
+
+/**
+ * Animation 2. Full Scroll Progress
+ */
+.page-progress {
+  --start: 0;
+  --end: var(--max-scroll);
+  transform: scaleX(calc(var(--scene-progress)));
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  border-bottom: 1px solid #fff;
+  background: #000;
+  transform-origin: 0 0;
+}
+
+.section {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10vmin;
+}
+
+  .section__image {
+    transform: translateY(calc(50% * (2 * var(--scene-progress) - 1)));
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .section__text {
+    position: relative;
+  }
+
+.page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translate3d(0, calc(var(--scroll) * -1px), 0);
+}
+
+
+
+.box {
+  --start: 0;
+  --end: var(--max-scroll);
+  transform:
+    translate(0, calc(var(--scene-progress) * var(--max-scroll) * 1px))
+    rotate(calc(var(--scene-progress) * 1turn));
+  opacity: 0.5;
+  position: absolute;
+  z-index: 1;
+  top: 100px;
+  left: 100px;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  color: #fff;
+  background: #000;
+  border-radius: 20%;
+}
+
+.video-section {
+  position: relative;
+  overflow: visible;
+  min-height: 200vh;
+  display: block;
+}
+
+  .video-section__container {
+    box-sizing: border-box;
+    padding: 2rem;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-section__media {
+    --w: 640;
+    --h: 320;
+    --sy: calc(var(--scene-progress) * (var(--vh) * 100 / var(--h) - 1) + 1);
+    --sx: calc(var(--scene-progress) * (var(--vw) * 100 / var(--w) - 1) + 1);
+    --s: max(var(--sx), var(--sy));
+    /* sticky emulation */
+    /* --ty: calc(clamp(0, var(--scroll) - var(--start), var(--end) - var(--start)) * 1px); */
+    --ty: calc(max(0, var(--scroll) - var(--start)) * 1px);
+
+    transform: translateY(var(--ty))
+               scale(var(--s));
+    flex: 0 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+
+.text-section {
+  --duration: calc(var(--vh) * 100);
+  margin-top: -100vh;
+  position: relative;
+  overflow: visible;
+  display: block;
+  min-height: 250vh;
+}
+
+  .text-section::before {
+    content: '';
+    display: block;
+    padding-top: 100vh;
+  }
+
+  .text-section::after {
+    content: '';
+    opacity: calc(var(--scene-progress) * 0.92);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #000;
+  }
+
+  .text-section__content {
+    --duration: calc(var(--vh) * 100);
+
+    /* lerp */
+    --min: 1;
+    --max: 0.5;
+    --mult: var(--scene-progress);
+
+    --ty: calc(var(--scene-progress) * var(--vh) * 100 / 2 * 1px);
+
+    /* transform: translateY(var(--ty)) scale(var(--lerp-value)); */
+    transform-origin: 50% 0%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    overflow: hidden;
+    max-width: 960px;
+    padding-left: 1.5rem;
+    padding-top: 1.5rem;
+    font-size: 24px;
+    line-height: 1.5;
+    color: #fff;
+  }

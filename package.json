@@ -1,0 +1,30 @@
+{
+  "name": "@web-alchemy/smooth",
+  "version": "1.0.0",
+  "type": "module",
+  "source": "src/smooth.js",
+  "exports": {
+    "require": "./dist/smooth.cjs",
+    "default": "./dist/smooth.modern.js"
+  },
+  "main": "./dist/smooth.umd.js",
+  "module": "./dist/smooth.module.js",
+  "unpkg": "./dist/smooth.umd.js",
+  "scripts": {
+    "start": "npx serve",
+    "build": "microbundle",
+    "dev": "microbundle watch --generateTypes",
+    "prepublishOnly": "npm run build --generateTypes"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "source": "src/smooth.js",
+    "main": "dist/smooth.umd.js"
+  },
+  "devDependencies": {
+    "microbundle": "^0.15.1"
+  }
+}

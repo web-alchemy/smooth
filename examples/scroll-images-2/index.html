@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Images #2</title>
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      animation-name: background-color;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-play-state: paused;
+      animation-delay: calc(-1s * var(--scroll-ratio));
+    }
+
+    body::before {
+      content: '';
+      display: block;
+      min-height: calc(100vh * var(--items-count));
+    }
+
+    @keyframes background-color {
+      0% {
+        background-color: #ff9a9e;
+      }
+
+      99% {
+        background-color: #fad0c4;
+      }
+
+      100% {
+        background-color: #fad0c4;
+      }
+    }
+
+    main {}
+
+    section {
+      --start: (var(--index) - 1) * var(--part);
+      --end: (var(--index) + 1) * var(--part);
+      --section-scroll: clamp(var(--start), var(--scroll), var(--end));
+      --section-ratio: (var(--section-scroll) - var(--start)) / (var(--end) - var(--start)); /* [0, 1]*/
+      --section-mixed: (2 * var(--section-ratio) - 1); /* [-1, 1]*/
+      --opacity: calc(1 - max(var(--section-mixed), -1 * var(--section-mixed)));
+      opacity: var(--opacity);
+      position: fixed;
+      inset: 0;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      transform:
+        translateY(calc(-100vh * var(--section-mixed)))
+        rotateX(calc(var(--section-mixed) * 60deg))
+        rotateY(calc(var(--section-mixed) * 45deg))
+        rotateZ(calc(var(--section-mixed) * 4deg))
+      ;
+      will-change: transform, opacity;
+    }
+
+    section > img {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: 80%;
+      min-height: 0;
+      min-width: 0;
+      border-radius: 1rem;
+    }
+
+    section:nth-child(1) {
+      --index: 0;
+    }
+
+    section:nth-child(2) {
+      --index: 1;
+    }
+
+    section:nth-child(3) {
+      --index: 2;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <img src="https://picsum.photos/id/10/800/1200" alt="">
+    </section>
+
+    <section>
+      <img src="https://picsum.photos/id/11/800/1200" alt="">
+    </section>
+
+    <section>
+      <img src="https://picsum.photos/id/15/800/1200" alt="">
+    </section>
+  </main>
+
+  <script type="module">
+    import { Smooth } from '../../src/smooth.js'
+
+    const mainContainer = document.querySelector('main')
+    const sections = [...document.querySelectorAll('section')]
+    const rootElement = document.documentElement
+
+    let viewportHeight
+    let maxScroll
+    let scrollHeight
+
+    function calcSizes() {
+      requestAnimationFrame(() => {
+        viewportHeight = window.innerHeight
+        scrollHeight = sections.length * viewportHeight
+        maxScroll = scrollHeight - viewportHeight
+        rootElement.style.setProperty('--part', viewportHeight)
+        rootElement.style.setProperty('--items-count', sections.length)
+      })
+    }
+
+    function render(scroll) {
+      rootElement.style.setProperty('--scroll', scroll.toFixed(2))
+      rootElement.style.setProperty('--scroll-ratio', (scroll / maxScroll).toFixed(2))
+    }
+
+    const smooth = new Smooth({
+      value: [0],
+    })
+
+    window.addEventListener('scroll', () => {
+      smooth.update([window.scrollY])
+    })
+
+    window.addEventListener('resize', () => {
+      calcSizes()
+    })
+
+    smooth.addEventListener('update', (event) => {
+      render(event.detail[0])
+    })
+
+    calcSizes()
+
+    smooth.start()
+  </script>
+</body>
+</html>

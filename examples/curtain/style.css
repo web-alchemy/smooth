@@ -1,0 +1,106 @@
+html {
+  font: 100%/1.5 sans-serif;
+  color: #484848;
+  background: #f4f6f8;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.scene {
+  --start: calc(var(--part) * var(--index));
+  --end: calc(var(--part) * (var(--index) + 1));
+  --clamp: clamp(var(--start), var(--scroll, 0), var(--end));
+  --progress: calc((var(--clamp) - var(--start)) / (var(--end) - var(--start)));
+  height: 200%;
+}
+
+  .scene__content {
+    --_start: calc(var(--part) * (var(--index) + 1));
+    --_end: calc(var(--part) * (var(--index) + 2));
+    --_clamp: clamp(var(--_start), var(--scroll, 0), var(--_end));
+    --_progress: calc((var(--_clamp) - var(--_start)) / (var(--_end) - var(--_start)));
+    --scale: calc(1 + var(--_progress) * (0.5 - 1));
+    --opacity: calc(1 + var(--_progress) * (0 - 1));
+    transform: scale(var(--scale));
+    opacity: var(--opacity);
+    position: fixed;
+    inset: 0;
+    visibility: hidden;
+  }
+
+  .scene__part {
+    --move: calc((1 - var(--progress)) * var(--sign) * 100%);
+    transform: translate3d(var(--move), 0, 0);
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 2em;
+    background: #fff;
+    box-shadow: 0 0 16px rgba(0, 0, 0, calc(var(--progress) * 0.2));
+    will-change: transform, opacity, box-shadow;
+}
+
+  .scene__part_left {
+    --sign: -1;
+    left: 0;
+  }
+
+  .scene__part_right {
+    --sign: 1;
+    right: 0;
+  }
+
+  .scene__img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scene__title {
+  margin: 0 0 .25em;
+  padding: 0;
+}
+
+  .scene__title::after {
+    content: '';
+    margin: .5em 0;
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: currentColor;
+  }
+
+  .scene__text {
+    margin: 0;
+    padding: 0;
+  }
+
+.message {
+  --start: 0;
+  --end: var(--part);
+  opacity: calc(1 - var(--progress));
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  font-size: 10vh;
+  text-align: center;
+}
