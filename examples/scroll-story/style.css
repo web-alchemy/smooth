@@ -106,6 +106,8 @@ body {
 
   .section__text {
     position: relative;
+    color: #fff;
+    mix-blend-mode: overlay;
   }
 
 .page {
