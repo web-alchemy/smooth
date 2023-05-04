@@ -8,13 +8,15 @@
     "default": "./dist/smooth.modern.js"
   },
   "main": "./dist/smooth.umd.js",
+  "umd:main": "./dist/smooth.umd.js",
   "module": "./dist/smooth.module.js",
   "unpkg": "./dist/smooth.umd.js",
+  "types": "dist/smooth.d.ts",
   "scripts": {
     "start": "npx serve",
-    "build": "microbundle",
+    "build": "microbundle --generateTypes",
     "dev": "microbundle watch --generateTypes",
-    "prepublishOnly": "npm run build --generateTypes",
+    "prepublishOnly": "npm run build",
     "postpublish": "git push origin --all; git push origin --tags",
     "postversion": "npm publish",
     "preversion": "npm test",
