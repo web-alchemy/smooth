@@ -90,8 +90,10 @@ smooth.start()
 
 ## Examples
 
-Run web server with examples
+Run web server with examples for local testing
 
 ```bash
 npm start
 ```
+
+or check https://web-alchemy.github.io/smooth
