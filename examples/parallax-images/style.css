@@ -1,0 +1,64 @@
+/* library */
+.scene {
+  --__start: var(--start, calc(var(--end) - var(--duration)));
+  --__end: var(--end, calc(var(--start) + var(--duration)));
+  --__duration: var(--duration, calc(var(--__end) - var(--__start)));
+
+  --scene-scroll: clamp(var(--__start), var(--scroll, 0), var(--__end));
+  --scene-progress: calc((var(--scene-scroll) - var(--__start)) / (var(--__duration)));
+}
+
+body {
+  position: relative;
+  margin: 0;
+  height: calc(var(--scroll-height) * 1px);
+  min-height: 100vh;
+  background-color: hsl(240deg 50% 75%);
+}
+
+.section {
+  --start: calc(100 * var(--vh) * (var(--index) - 1));
+  --end: calc(100 * var(--vh) * (var(--index) + 1));
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10vmin;
+}
+
+  .section__image {
+    --__image-offset: calc(var(--image-offset, 50) * 1%);
+    transform: translateY(calc(var(--__image-offset) * (2 * var(--scene-progress) - 1)));
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .section__text {
+    position: relative;
+    color: #fff;
+    mix-blend-mode: overlay;
+  }
+
+.page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translate3d(0, calc(var(--scroll) * -1px), 0);
+}
+
+form {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  padding: 1em;
+  background-color: hsla(0, 0%, 100%, 0.5);
+  border-radius: 8px;
+}
