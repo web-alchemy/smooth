@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Move along SVG Path</title>
+  <style>
+    body {
+      margin: 0;
+      height: calc(100vh * 4);
+      box-sizing: border-box;
+      background: #f9f9f9;
+    }
+
+    svg {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      overflow: visible;
+      max-width: 100%;
+    }
+
+    path {
+      stroke-dasharray: 12;
+      stroke-width: 4;
+      stroke-opacity: 0.5;
+    }
+
+    .point {
+      transform:
+        translate3d(calc(var(--tx) * 1px), calc(var(--ty) * 1px), 0)
+        rotate(calc(var(--rotate) * 1rad))
+      ;
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin: -0.5em 0 0 -0.5em;
+      font-size: 24px;
+      width: 1em;
+      height: 1em;
+      border-radius: 50%;
+      background: hsla(240, 100%, 50%, 0.5);
+    }
+
+    .point::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -2px;
+      width: 100%;
+      height: 4px;
+      background: red;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480"
+    preserveAspectRatio="xMidYMid meet">
+    <g transform="translate(100, 100) scale(0.5) rotate(-60)">
+      <path fill="none" fill-rule="evenodd" stroke="currentColor"
+        d="M0 0c12.445 144.773 28.324 234.678 47.639 269.715 28.971 52.556 38.55 70.111 76.29 101.691 37.74 31.58 116.302 10.625 127.419-110.435 11.117-121.06 21.407-150.408 42.55-184.82 21.144-34.41 77.997-51.236 110.225 36.394C436.35 200.175 501.01 443.39 640 480" />
+    </g>
+  </svg>
+
+  <div class="point"></div>
+
+  <script type="module">
+    import { Smooth } from '../../src/smooth.js';
+
+    let maxSscroll;
+
+    let svg = document.querySelector('svg');
+    let path = svg.querySelector('path');
+    let point = document.querySelector('.point');
+
+    function getViewportH() {
+      return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    }
+
+    function getDocumentHeight() {
+      let html = document.documentElement;
+      let body = document.body;
+      return Math.max(
+        body.scrollHeight, html.scrollHeight,
+        body.offsetHeight, html.offsetHeight,
+        body.clientHeight, html.clientHeight
+      );
+    }
+
+    function getMaxScroll() {
+      return getDocumentHeight() - getViewportH();
+    }
+
+    function setMaxScroll() {
+      return maxSscroll = getMaxScroll();
+    }
+
+    function getAngle(p1, p2) {
+      let dx = p2.x - p1.x;
+      let dy = p2.y - p1.y;
+      return Math.atan2(dy, dx);
+    }
+
+    function render(scroll) {
+      let scrollValue = window.scrollY / maxSscroll;;
+      let totalLength = path.getTotalLength();
+
+      let svgPoint1 = path.getPointAtLength(scrollValue > 0.99
+        ? (scrollValue - 0.01) * totalLength
+        : scrollValue * totalLength
+      );
+      let svgPoint2 = path.getPointAtLength(scrollValue > 0.99
+        ? scrollValue * totalLength
+        : (scrollValue + 0.01) * totalLength
+      );
+
+      let matrix = path.getScreenCTM();
+      let domPoint1 = svgPoint1.matrixTransform(matrix);
+      let domPoint2 = svgPoint2.matrixTransform(matrix);
+      let angle = getAngle(domPoint1, domPoint2);
+
+      point.style.setProperty('--rotate', angle);
+      point.style.setProperty('--tx', domPoint1.x);
+      point.style.setProperty('--ty', domPoint1.y);
+    }
+
+    setMaxScroll();
+    render(window.scrollY);
+
+    window.onresize = function() {
+      setMaxScroll();
+      render(window.scrollY);
+    };
+
+    let smooth = new Smooth({
+      value: [window.scrollY],
+      step: 0.075,
+      accucary: 0.001
+    })
+
+    window.onscroll = () => {
+      smooth.update([window.scrollY]);
+    }
+
+    smooth.addEventListener('update', (event) => {
+      const [scroll] = event.detail;
+      render(scroll);
+    })
+  </script>
+</body>
+</html>
