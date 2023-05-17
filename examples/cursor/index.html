@@ -24,11 +24,23 @@
       width: var(--_size);
       aspect-ratio: 1;
       border-radius: 50%;
+      pointer-events: none;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      touch-action: none;
     }
   </style>
 </head>
 <body>
   <div class="cursor" role="presentation"></div>
+
   <script type="module">
     import { Smooth } from '../../src/smooth.js'
 

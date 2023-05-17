@@ -24,6 +24,7 @@
       font-size: 2em;
       border-radius: 50%;
       will-change: transform;
+      pointer-events: none;
     }
 
     :root {
@@ -48,9 +49,14 @@
       will-change: background-image;
     }
 
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
-      height: 100vh;
+      touch-action: none;
     }
 
     body::before,
