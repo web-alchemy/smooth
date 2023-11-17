@@ -33,7 +33,9 @@
   --lerp-value: calc(var(--min) + (var(--max) - var(--min)) * var(--mult));
 }
 
-:root {}
+:root {
+  overscroll-behavior: none;
+}
 
 body {
   position: relative;

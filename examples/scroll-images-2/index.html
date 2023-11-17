@@ -4,23 +4,31 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff9a9e">
   <title>Scroll Images #2</title>
   <style>
+    html,
+    body {
+      overscroll-behavior: none;
+    }
+
     body {
       margin: 0;
       overflow-x: hidden;
+      min-height: calc(100vh * var(--items-count));
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      will-change: background-color;
       animation-name: background-color;
       animation-duration: 1s;
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-play-state: paused;
       animation-delay: calc(-1s * var(--scroll-ratio));
-    }
-
-    body::before {
-      content: '';
-      display: block;
-      min-height: calc(100vh * var(--items-count));
     }
 
     @keyframes background-color {
@@ -36,8 +44,6 @@
         background-color: #fad0c4;
       }
     }
-
-    main {}
 
     section {
       --start: (var(--index) - 1) * var(--part);
@@ -107,6 +113,8 @@
     const mainContainer = document.querySelector('main')
     const sections = [...document.querySelectorAll('section')]
     const rootElement = document.documentElement
+    const body = document.body
+    const meta = document.head.querySelector('meta[name*="theme-color"]')
 
     let viewportHeight
     let maxScroll
@@ -123,12 +131,14 @@
     }
 
     function render(scroll) {
-      rootElement.style.setProperty('--scroll', scroll.toFixed(2))
-      rootElement.style.setProperty('--scroll-ratio', (scroll / maxScroll).toFixed(2))
+      rootElement.style.setProperty('--scroll', scroll.toFixed(4))
+      rootElement.style.setProperty('--scroll-ratio', (scroll / maxScroll).toFixed(4))
+      meta.content = window.getComputedStyle(document.body, '::before').backgroundColor
     }
 
     const smooth = new Smooth({
       value: [0],
+      step: 0.075
     })
 
     window.addEventListener('scroll', () => {

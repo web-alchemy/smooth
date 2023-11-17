@@ -6,21 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scroll Images</title>
   <style>
+    html,
+    body {
+      overscroll-behavior: none;
+    }
+
     body {
       margin: 0;
       overflow-x: hidden;
+      min-height: calc(100vh * var(--items-count));
+      will-change: background-color;
       animation-name: background-color;
       animation-duration: 1s;
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-play-state: paused;
       animation-delay: calc(-1s * var(--scroll-ratio));
-    }
-
-    body::before {
-      content: '';
-      display: block;
-      min-height: calc(100vh * var(--items-count));
     }
 
     @keyframes background-color {
@@ -36,8 +37,6 @@
         background-color: #fad0c4;
       }
     }
-
-    main {}
 
     section {
       --start: (var(--index)) * var(--part);
@@ -142,8 +141,8 @@
     }
 
     function render(scroll) {
-      rootElement.style.setProperty('--scroll', scroll.toFixed(2))
-      rootElement.style.setProperty('--scroll-ratio', (scroll / maxScroll).toFixed(2))
+      rootElement.style.setProperty('--scroll', scroll.toFixed(4))
+      rootElement.style.setProperty('--scroll-ratio', (scroll / maxScroll).toFixed(4))
     }
 
     const smooth = new Smooth({

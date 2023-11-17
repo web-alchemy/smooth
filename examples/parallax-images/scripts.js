@@ -24,7 +24,7 @@ function setStyles(element, styles) {
 
 function render(scroll) {
   setStyles(root, {
-    '--scroll': scroll.toFixed(2)
+    '--scroll': scroll.toFixed(4)
   });
 }
 
