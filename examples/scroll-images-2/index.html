@@ -51,7 +51,8 @@
       --section-scroll: clamp(var(--start), var(--scroll), var(--end));
       --section-ratio: (var(--section-scroll) - var(--start)) / (var(--end) - var(--start)); /* [0, 1]*/
       --section-mixed: (2 * var(--section-ratio) - 1); /* [-1, 1]*/
-      --opacity: calc(1 - max(var(--section-mixed), -1 * var(--section-mixed)));
+      --section-mixed-abs: max(var(--section-mixed), -1 * var(--section-mixed));
+      --opacity: calc(1 - var(--section-mixed-abs));
       opacity: var(--opacity);
       position: fixed;
       inset: 0;
