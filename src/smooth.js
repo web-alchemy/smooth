@@ -19,6 +19,8 @@ class Smooth extends EventTarget {
     this.accuracy = options.accuracy || 0.001
     /** @private */
     this.rafId = null
+    /** @private */
+    this.diff = new Array(this.target.length)
   }
 
   start() {
@@ -41,15 +43,19 @@ class Smooth extends EventTarget {
    * @private
    */
   loop = () => {
-    const diff = this.target.map((item, index) => item - this.value[index])
-    const delta = Math.max.apply(null, diff.map((item) => Math.abs(item)))
+    let delta = 0
+    this.target.forEach((item, index) => {
+      const itemDiff = item - this.value[index]
+      this.diff[index] = itemDiff
+      delta = Math.max(delta, Math.abs(itemDiff))
+    })
 
     if (delta < this.accuracy) {
       this.value = this.target
       this.stop()
     } else {
       this.value.forEach((item, index) => {
-        this.value[index] = item + this.step * diff[index]
+        this.value[index] = item + this.step * this.diff[index]
       })
       this.start()
     }
