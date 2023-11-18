@@ -126,7 +126,7 @@
       .then(() => {
         const smooth = new Smooth({
           value: [0],
-          ease: 0.075
+          step: 0.1
         });
         window.addEventListener('scroll', () => {
           smooth.update([window.scrollY])
