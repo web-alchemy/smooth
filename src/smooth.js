@@ -12,7 +12,7 @@ class Smooth extends EventTarget {
     /** @private */
     this.value = options.value || [0]
     /** @private */
-    this.target = options.target || options.value
+    this.target = options.target || this.value
     /** @private */
     this.step = options.step || 0.1
     /** @private */
