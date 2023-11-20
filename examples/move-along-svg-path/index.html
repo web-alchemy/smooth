@@ -73,11 +73,13 @@
   <script type="module">
     import { Smooth } from '../../src/smooth.js';
 
-    let maxSscroll;
+    let maxScroll;
 
     let svg = document.querySelector('svg');
     let path = svg.querySelector('path');
     let point = document.querySelector('.point');
+
+    const accuracy = 0.001;
 
     function getViewportH() {
       return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -98,7 +100,7 @@
     }
 
     function setMaxScroll() {
-      return maxSscroll = getMaxScroll();
+      maxScroll = getMaxScroll();
     }
 
     function getAngle(p1, p2) {
@@ -107,27 +109,25 @@
       return Math.atan2(dy, dx);
     }
 
+    function clamp(min, value, max) {
+      return Math.max(min, Math.min(value, max));
+    }
+
     function render(scroll) {
-      let scrollValue = window.scrollY / maxSscroll;;
+      let scrollValue = scroll / maxScroll;
       let totalLength = path.getTotalLength();
 
-      let svgPoint1 = path.getPointAtLength(scrollValue > 0.99
-        ? (scrollValue - 0.01) * totalLength
-        : scrollValue * totalLength
-      );
-      let svgPoint2 = path.getPointAtLength(scrollValue > 0.99
-        ? scrollValue * totalLength
-        : (scrollValue + 0.01) * totalLength
-      );
+      let svgPoint1 = path.getPointAtLength(clamp(0, scrollValue, 1 - accuracy) * totalLength);
+      let svgPoint2 = path.getPointAtLength(clamp(0 + accuracy, scrollValue + accuracy, 1) * totalLength);
 
       let matrix = path.getScreenCTM();
       let domPoint1 = svgPoint1.matrixTransform(matrix);
       let domPoint2 = svgPoint2.matrixTransform(matrix);
       let angle = getAngle(domPoint1, domPoint2);
 
-      point.style.setProperty('--rotate', angle);
-      point.style.setProperty('--tx', domPoint1.x);
-      point.style.setProperty('--ty', domPoint1.y);
+      point.style.setProperty('--rotate', angle.toFixed(4));
+      point.style.setProperty('--tx', domPoint1.x.toFixed(4));
+      point.style.setProperty('--ty', domPoint1.y.toFixed(4));
     }
 
     setMaxScroll();
@@ -141,12 +141,12 @@
     let smooth = new Smooth({
       value: [window.scrollY],
       step: 0.075,
-      accucary: 0.001
+      accuracy
     })
 
-    window.onscroll = () => {
+    window.addEventListener('scroll', () => {
       smooth.update([window.scrollY]);
-    }
+    })
 
     smooth.addEventListener('update', (event) => {
       const [scroll] = event.detail;
