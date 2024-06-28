@@ -7,7 +7,7 @@ const smooth = new Smooth({
   value: [0],
   step: 0.075,
   accuracy: 0.001,
-})
+});
 
 function getViewHeight() {
   return Math.max(
@@ -19,12 +19,12 @@ function getViewHeight() {
 function setStyles(element, styles) {
   Object.entries(styles).forEach(([property, value]) => {
     element.style.setProperty(property, value);
-  })
+  });
 }
 
 function render(scroll) {
   setStyles(root, {
-    '--scroll': scroll.toFixed(4)
+    '--scroll': scroll.toFixed(2)
   });
 }
 
@@ -57,5 +57,5 @@ window.addEventListener('load', function() {
 
   smooth.addEventListener('update', (event) => {
     render(event.detail[0])
-  })
+  });
 });
